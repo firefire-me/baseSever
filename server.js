@@ -12,15 +12,7 @@ const authRouter = require("./routes/auth");
 const port = process.env.PORT || 3000;
 
 // 启用 CORS 中间件
-app.use(
-  cors({
-    origin: [
-      "http://localhost:5173", // 允许本地开发
-      "https://your-vue-app.vercel.app", // <--- 预留给你即将部署的前端域名
-    ],
-    credentials: true,
-  })
-);
+app.use(cors());
 
 // 添加解析请求体的中间件
 app.use(express.json()); // 解析 JSON 格式的请求体
