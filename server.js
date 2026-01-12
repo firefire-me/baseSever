@@ -12,7 +12,36 @@ const authRouter = require("./routes/auth");
 const port = process.env.PORT || 3000;
 
 // 启用 CORS 中间件
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "Origin",
+      "X-Requested-With",
+      "Accept",
+    ],
+    credentials: true,
+  })
+);
+
+app.use((req, res, next) => {
+  if (req.method === "OPTIONS") {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Methods",
+      "GET, POST, PUT, DELETE, OPTIONS"
+    );
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Content-Type, Authorization, Content-Length, X-Requested-With"
+    );
+    return res.sendStatus(200);
+  }
+  next();
+});
 
 // 添加解析请求体的中间件
 app.use(express.json()); // 解析 JSON 格式的请求体
