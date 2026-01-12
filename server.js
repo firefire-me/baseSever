@@ -39,6 +39,13 @@ app.get("/", (req, res) => {
   res.sendFile(filePath);
 });
 
+// 测试接口
+app.get("/text", (req, res) => {
+  res.json({
+    message: "Hello World",
+  });
+});
+
 // 3. 启动服务
 app.listen(port, () => {
   console.log(`Express 服务器运行在 http://127.0.0.1:${port}`);
