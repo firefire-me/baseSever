@@ -6,7 +6,7 @@ const auth = require("../middleware/auth"); // 3. 引入认证中间件
 // === Task 相关的 CRUD 接口 ===
 
 // 1. 获取所有任务 (READ) - GET
-router.get("/", auth, async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     // 1. 获取查询参数 (Query Params)
     // 也就是 URL 问号后面的东西：?page=1&limit=10&status=true&search=...
