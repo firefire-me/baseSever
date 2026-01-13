@@ -78,7 +78,7 @@ app.get("/", (req, res) => {
 // 测试接口 （GET 请求）
 app.get("/text", (req, res) => {
   res.json({
-    message: "Hello World",
+    message: "Hello World!",
   });
 });
 
