@@ -96,19 +96,20 @@ app.post("/webhook-update", (req, res) => {
   // 2. 先给 GitHub 回复成功 (否则 GitHub 会以为超时了)
   res.status(200).send("收到指令，开始更新！");
 
-  // 3. 执行部署脚本 (这就是你昨天的 deploy.sh)
-  // 这里的命令串起来：进入目录 -> 拉代码 -> 装依赖 -> 重启
-  exec(
-    "cd /var/www/app && git pull && npm install && pm2 restart todo-api",
-    (error, stdout, stderr) => {
-      if (error) {
-        console.error(`执行出错: ${error}`);
-        return;
+  // 2. 【关键】延迟 1 秒再自杀 (重启)
+  // 给网络传输留出一点时间
+  setTimeout(() => {
+    exec(
+      "cd /var/www/app && git pull && npm install && pm2 restart todo-api",
+      (error, stdout, stderr) => {
+        if (error) {
+          console.error(`执行出错: ${error}`);
+          return;
+        }
+        console.log(`stdout: ${stdout}`);
       }
-      console.log(`stdout: ${stdout}`);
-      console.error(`stderr: ${stderr}`);
-    }
-  );
+    );
+  }, 1000);
 });
 
 // 3. 启动服务
