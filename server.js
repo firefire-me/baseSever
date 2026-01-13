@@ -11,6 +11,9 @@ const authRouter = require("./routes/auth");
 const uploadRoutes = require("./routes/upload");
 const port = process.env.PORT || 3000;
 
+// 在 server.js 中引入 child_process 用于执行 shell 命令
+const { exec } = require("child_process");
+
 // 启用 CORS 中间件
 app.use(
   cors({
@@ -77,6 +80,35 @@ app.get("/text", (req, res) => {
   res.json({
     message: "Hello World",
   });
+});
+
+// 注意：'/webhook-update' 这个路径你可以随便起个复杂的，防止被猜到
+app.post("/webhook-update", (req, res) => {
+  // 1. 简单的安全验证 (可选，防止路人误触发)
+  // 我们约定：GitHub 必须带个 secret 密码
+  const secret = req.query.secret;
+  if (secret !== "my_super_secret_deploy_password") {
+    return res.status(403).send("密码错误，别捣乱！");
+  }
+
+  console.log("收到 GitHub 更新通知，准备部署...");
+
+  // 2. 先给 GitHub 回复成功 (否则 GitHub 会以为超时了)
+  res.status(200).send("收到指令，开始更新！");
+
+  // 3. 执行部署脚本 (这就是你昨天的 deploy.sh)
+  // 这里的命令串起来：进入目录 -> 拉代码 -> 装依赖 -> 重启
+  exec(
+    "cd /var/www/app && git pull && npm install && pm2 restart todo-api",
+    (error, stdout, stderr) => {
+      if (error) {
+        console.error(`执行出错: ${error}`);
+        return;
+      }
+      console.log(`stdout: ${stdout}`);
+      console.error(`stderr: ${stderr}`);
+    }
+  );
 });
 
 // 3. 启动服务
