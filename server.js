@@ -8,7 +8,7 @@ const mongoose = require("mongoose");
 // 1. 引入拆分出去的路由文件
 const tasksRouter = require("./routes/tasks");
 const authRouter = require("./routes/auth");
-
+const uploadRoutes = require("./routes/upload");
 const port = process.env.PORT || 3000;
 
 // 启用 CORS 中间件
@@ -47,6 +47,9 @@ app.use((req, res, next) => {
 app.use(express.json()); // 解析 JSON 格式的请求体
 app.use(express.urlencoded({ extended: true })); // 解析 URL-encoded 格式的请求体
 
+// 关键代码：让 /uploads 路径映射到本地 uploads 文件夹
+// 这样访问 http://api.你的域名.com/uploads/xxx.jpg 就能看到图片了
+app.use("/uploads", express.static("uploads"));
 const MONGO_URI = process.env.MONGO_URI;
 
 mongoose
@@ -57,6 +60,7 @@ mongoose
 // 2. 使用路由
 app.use("/api/tasks", tasksRouter);
 app.use("/api", authRouter);
+app.use("/api/upload", uploadRoutes);
 
 // 1. 定义路由 (Routing)
 // 对比原生：不需要写一大堆 if (req.url === '/')
