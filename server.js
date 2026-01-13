@@ -91,7 +91,7 @@ app.post("/webhook-update", (req, res) => {
     return res.status(403).send("密码错误，别捣乱！");
   }
 
-  console.log("收到 GitHub 更新通知，准备部署...");
+  console.log("收到 GitHub 更新通知，准备部署......");
 
   // 2. 先给 GitHub 回复成功 (否则 GitHub 会以为超时了)
   res.status(200).send("收到指令，开始更新！");
