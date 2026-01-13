@@ -97,7 +97,7 @@ app.post("/webhook-update", (req, res) => {
   res.status(200).send("收到指令，开始更新！");
 
   // 2. 【关键】延迟 1 秒再自杀 (重启)
-  // 给网络传输留出一点时间
+  // 给网络传输留出一点时间 （1秒）
   setTimeout(() => {
     exec(
       "cd /var/www/app && git pull && npm install && pm2 restart todo-api",
