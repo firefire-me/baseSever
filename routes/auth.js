@@ -63,7 +63,7 @@ router.post("/login", async (req, res) => {
   const token = jwt.sign(
     { id: user._id, username: user.username }, // Payload
     SECRET_KEY, // 密钥
-    { expiresIn: "1h" } // 过期时间
+    { expiresIn: "1w" } // 过期时间1周有效期
   );
   // 3. 返回 Token 给前端
   res.json({
