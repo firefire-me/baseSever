@@ -14,17 +14,17 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # 2. 使用 Rsync 同步代码到服务器（会自动删除多余文件）
-      - name: Sync files via Rsync
-        uses: easingthemes/ssh-deploy@main
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SERVER_PASSWORD }} # 注意：这个插件默认用密钥，但也支持密码
-          ARGS: "-avz --delete" # --delete 就是实现“本地删了服务器也删”的魔法指令
-          SOURCE: "./"
-          TARGET: "/www/wwwroot/todo-api"
-          # 极其重要：务必把 node_modules 和环境变量文件排除掉！
-          # 否则它发现你 GitHub 上没有 node_modules，会把服务器上的 node_modules 也给删了！
-          EXCLUDE: "node_modules/, .env, .git/, .github/, *.sh"
+      # 2. 将代码传送到阿里云服务器
+      # 这一步会自动把你的代码传上去，并聪明地略过 GitHub 上没有的 node_modules
+      - name: Copy files to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: 22
+          source: "./*"
+          target: "/www/wwwroot/todo-api" # 请确认这是你的后端根目录
 
       # 3. 登录服务器安装依赖并重启服务
       - name: Execute SSH Commands
