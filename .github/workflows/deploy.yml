@@ -1,0 +1,46 @@
+name: Deploy Node.js Backend
+
+on:
+  push:
+    branches:
+      - main # 如果你的主分支叫 master，请改成 master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 拉取最新代码
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # 2. 将代码传送到阿里云服务器
+      # 这一步会自动把你的代码传上去，并聪明地略过 GitHub 上没有的 node_modules
+      - name: Copy files to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: 22
+          source: "./*"
+          target: "/www/wwwroot/todo-api" # 请确认这是你的后端根目录
+
+      # 3. 登录服务器安装依赖并重启服务
+      - name: Execute SSH Commands
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: 22
+          script: |
+            # 进入后端目录
+            cd /www/wwwroot/todo-api 
+
+            # 安装生产环境依赖（跳过 devDependencies）
+            npm install --omit=dev
+
+            # 重启 PM2 中的所有 Node 服务
+            # 如果你的宝塔 Node 项目名叫 test，也可以写成 pm2 restart test
+            pm2 restart test
