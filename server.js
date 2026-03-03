@@ -27,7 +27,7 @@ app.use(
       "Accept",
     ],
     credentials: true,
-  })
+  }),
 );
 
 app.use((req, res, next) => {
@@ -35,11 +35,11 @@ app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header(
       "Access-Control-Allow-Methods",
-      "GET, POST, PUT, DELETE, OPTIONS"
+      "GET, POST, PUT, DELETE, OPTIONS",
     );
     res.header(
       "Access-Control-Allow-Headers",
-      "Content-Type, Authorization, Content-Length, X-Requested-With"
+      "Content-Type, Authorization, Content-Length, X-Requested-With",
     );
     return res.sendStatus(200);
   }
@@ -78,7 +78,7 @@ app.get("/", (req, res) => {
 // 测试接口 （GET 请求）
 app.get("/text", (req, res) => {
   res.json({
-    message: "Hello World!",
+    message: "Text Hello World!",
   });
 });
 
@@ -107,7 +107,7 @@ app.post("/webhook-update", (req, res) => {
           return;
         }
         console.log(`stdout: ${stdout}`);
-      }
+      },
     );
   }, 1000);
 });
