@@ -9,6 +9,7 @@ const mongoose = require("mongoose");
 const tasksRouter = require("./routes/tasks");
 const authRouter = require("./routes/auth");
 const uploadRoutes = require("./routes/upload");
+const chatRouter = require("./routes/chat");
 const port = process.env.PORT || 3000;
 
 // 在 server.js 中引入 child_process 用于执行 shell 命令
@@ -64,6 +65,7 @@ mongoose
 app.use("/api/tasks", tasksRouter);
 app.use("/api", authRouter);
 app.use("/api/upload", uploadRoutes);
+app.use("/api/chat", chatRouter);
 
 // 1. 定义路由 (Routing)
 // 对比原生：不需要写一大堆 if (req.url === '/')
